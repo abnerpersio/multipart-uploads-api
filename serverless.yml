@@ -1,0 +1,37 @@
+org: abnerpersio
+service: live055
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  region: es-east-1
+  architecture: arm64
+  memorySize: 128
+
+package:
+  individually: true
+
+build:
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: false
+    exclude:
+      - '@aws-sdk/*'
+
+functions:
+  upload:
+    handler: src/infra/functions/upload/index.handler
+    events:
+      - httpApi:
+          path: /
+          method: POST
+  users:
+    handler: src/infra/functions/users/index.handler
+    events:
+      - httpApi:
+          path: /users
+          method: ANY
+      - httpApi:
+          path: /users/{userId+}
+          method: ANY

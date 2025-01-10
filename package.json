@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "@middy/core": "^6.0.0",
+    "@middy/http-json-body-parser": "^6.0.0",
+    "@middy/http-multipart-body-parser": "^6.0.0",
+    "@middy/http-response-serializer": "^6.0.0",
+    "@middy/http-router": "^6.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^22.10.5",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.19.1"
+  }
+}
