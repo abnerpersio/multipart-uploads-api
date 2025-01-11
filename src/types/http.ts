@@ -4,7 +4,6 @@ export type HttpRequest<TData extends DefaultData = undefined, TParams = Record<
   body: TData;
   params: TParams;
   query: Record<string, string>;
-  userId: string | null;
 };
 
 export type HttpResponse =
