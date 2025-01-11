@@ -4,9 +4,32 @@ service: live055
 provider:
   name: aws
   runtime: nodejs22.x
-  region: es-east-1
+  region: us-east-1
   architecture: arm64
   memorySize: 128
+
+  httpApi:
+    cors:
+      allowedOrigins: '*'
+      allowedHeaders: '*'
+      allowedMethods: '*'
+      maxAge: 6000
+
+  iam:
+    role:
+      statements:
+        # S3
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:AbortMultipartUpload
+          Resource:
+            - !GetAtt UploadsBucket.Arn
+            - !Join ['/', [!GetAtt UploadsBucket.Arn, '*']]
+
+  environment:
+    UPLOADS_BUCKET_NAME: !Ref UploadsBucket
 
 package:
   individually: true
@@ -19,19 +42,27 @@ build:
     exclude:
       - '@aws-sdk/*'
 
+resources:
+  - ${file(resources/s3.yml)}
+
 functions:
-  upload:
-    handler: src/infra/functions/upload/index.handler
+  prepare-upload:
+    handler: src/infra/functions/upload/prepare-upload.handler
     events:
       - httpApi:
-          path: /
+          path: /prepare-upload
           method: POST
-  users:
-    handler: src/infra/functions/users/index.handler
+
+  complete-upload:
+    handler: src/infra/functions/upload/complete-upload.handler
     events:
       - httpApi:
-          path: /users
-          method: ANY
+          path: /complete-upload
+          method: POST
+
+  abort-mpu:
+    handler: src/infra/functions/upload/abort-mpu.handler
+    events:
       - httpApi:
-          path: /users/{userId+}
-          method: ANY
+          path: /abort-mpu
+          method: DELETE

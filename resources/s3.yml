@@ -1,0 +1,28 @@
+Resources:
+  UploadsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: uploads-bucket-2rrmzihhvxv6ygdx
+      CorsConfiguration:
+        CorsRules:
+          - Id: CorsRule
+            AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - PUT
+            AllowedOrigins:
+              - 'http://localhost:5173'
+              - 'http://127.0.0.1:5173'
+            ExposedHeaders:
+              - Etag
+            MaxAge: 3600
+      LifecycleConfiguration:
+        Rules:
+          - Id: auto-delete-after-1-day
+            Status: Enabled
+            ExpirationInDays: 1
+
+          - Id: auto-delete-mpus-after-1-day
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
